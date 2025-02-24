@@ -31,16 +31,11 @@ func (c *ProductController) CreateProductV2(ctx *fiber.Ctx) error {
 		return ctx.Status(400).JSON(fiber.Map{"error": "Invalid request"})
 	}
 
-	type ProductError struct {
-		Product models.Product `json:"product"`
-		Error   error          `json:"error"`
-	}
-
-	var productErrors []ProductError
+	var productErrors []models.ProductError
 
 	for _, p := range product {
 		if err := c.productService.CreateProduct(&p); err != nil {
-			productErrors = append(productErrors, ProductError{
+			productErrors = append(productErrors, models.ProductError{
 				Product: p,
 				Error:   err,
 			})

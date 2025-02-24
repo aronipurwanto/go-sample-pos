@@ -10,3 +10,8 @@ type Product struct {
 	SKU         string  `json:"sku" gorm:"column:product_sku"`
 	TaxRate     float64 `json:"tax_rate" gorm:"column:tax_rate"`
 }
+
+type ProductError struct {
+	Product Product `json:"product"`
+	Error   error   `json:"error"`
+}

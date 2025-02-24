@@ -7,6 +7,7 @@ import (
 
 type ProductService interface {
 	CreateProduct(product *models.Product) error
+	CreateProductBulk(product *[]models.Product) error
 	GetAllProducts() ([]models.Product, error)
 	GetProductByID(id string) (*models.Product, error)
 	UpdateProduct(id string, product *models.Product) error
@@ -22,6 +23,10 @@ func NewProductService(repo repositories.ProductRepository) ProductService {
 }
 func (s *productServiceImpl) CreateProduct(product *models.Product) error {
 	return s.Repo.Create(product)
+}
+
+func (s *productServiceImpl) CreateProductBulk(products *[]models.Product) error {
+	return s.Repo.CreateBulk(products)
 }
 
 func (s *productServiceImpl) GetAllProducts() ([]models.Product, error) {

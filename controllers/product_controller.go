@@ -25,6 +25,29 @@ func (c *ProductController) CreateProduct(ctx *fiber.Ctx) error {
 	return ctx.Status(201).JSON(product)
 }
 
+// Bulk insert products
+func (c *ProductController) CreateProductsBulk(ctx *fiber.Ctx) error {
+	var products []models.Product
+
+	// Parse JSON request
+	if err := ctx.BodyParser(&products); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid JSON format",
+		})
+	}
+
+	// Insert products
+	if err := c.productService.CreateProductBulk(&products); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to insert products",
+		})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Products added successfully",
+	})
+}
+
 func (c *ProductController) GetAllProducts(ctx *fiber.Ctx) error {
 	products, err := c.productService.GetAllProducts()
 	if err != nil {

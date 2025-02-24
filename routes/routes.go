@@ -11,6 +11,7 @@ func SetupRoutes(app *fiber.App, productController *controllers.ProductControlle
 	// Product Routes
 	productGroup := app.Group("/products")
 	productGroup.Post("/", productController.CreateProduct)
+	productGroup.Post("/bulk", productController.CreateProductsBulk)
 	productGroup.Get("/", productController.GetAllProducts)
 	productGroup.Get("/:id", productController.GetProductByID)
 	productGroup.Put("/:id", productController.UpdateProduct)

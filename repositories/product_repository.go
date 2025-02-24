@@ -7,6 +7,7 @@ import (
 
 type ProductRepository interface {
 	Create(product *models.Product) error
+	CreateBulk(product *[]models.Product) error
 	GetAll() ([]models.Product, error)
 	GetByID(id string) (*models.Product, error)
 	Update(id string, product *models.Product) error
@@ -23,6 +24,10 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 
 func (r *productRepositoryImpl) Create(product *models.Product) error {
 	return r.db.Create(product).Error
+}
+
+func (r *productRepositoryImpl) CreateBulk(products *[]models.Product) error {
+	return r.db.Create(products).Error
 }
 
 func (r *productRepositoryImpl) GetAll() ([]models.Product, error) {

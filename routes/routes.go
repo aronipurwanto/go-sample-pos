@@ -5,31 +5,53 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupRoutes(app *fiber.App, productController *controllers.ProductController,
+type RouteSetup struct {
+	App                *fiber.App
+	ProductController  *controllers.ProductController
+	CustomerController *controllers.CustomerController
+	EmployeeController *controllers.EmployeeController
+}
+
+func NewRouteSetup(app *fiber.App, productController *controllers.ProductController,
 	customerController *controllers.CustomerController,
-	employeeController *controllers.EmployeeController) {
+	employeeController *controllers.EmployeeController) *RouteSetup {
+	return &RouteSetup{
+		App:                app,
+		ProductController:  productController,
+		CustomerController: customerController,
+		EmployeeController: employeeController,
+	}
+}
+
+func (r *RouteSetup) Setup() {
 	// Product Routes
-	productGroup := app.Group("/products")
-	productGroup.Post("/", productController.CreateProduct)
-	productGroup.Post("/bulk", productController.CreateProductsBulk)
-	productGroup.Get("/", productController.GetAllProducts)
-	productGroup.Get("/:id", productController.GetProductByID)
-	productGroup.Put("/:id", productController.UpdateProduct)
-	productGroup.Delete("/:id", productController.DeleteProduct)
+	productGroup := r.App.Group("/products")
+	{
+		productGroup.Post("/", r.ProductController.CreateProduct)
+		productGroup.Post("/bulk", r.ProductController.CreateProductsBulk)
+		productGroup.Get("/", r.ProductController.GetAllProducts)
+		productGroup.Get("/:id", r.ProductController.GetProductByID)
+		productGroup.Put("/:id", r.ProductController.UpdateProduct)
+		productGroup.Delete("/:id", r.ProductController.DeleteProduct)
+	}
 
 	// Customer Routes
-	customerGroup := app.Group("/customers")
-	customerGroup.Post("/", customerController.CreateCustomer)
-	customerGroup.Get("/", customerController.GetAllCustomers)
-	customerGroup.Get("/:id", customerController.GetCustomerByID)
-	customerGroup.Put("/:id", customerController.UpdateCustomer)
-	customerGroup.Delete("/:id", customerController.DeleteCustomer)
+	customerGroup := r.App.Group("/customers")
+	{
+		customerGroup.Post("/", r.CustomerController.CreateCustomer)
+		customerGroup.Get("/", r.CustomerController.GetAllCustomers)
+		customerGroup.Get("/:id", r.CustomerController.GetCustomerByID)
+		customerGroup.Put("/:id", r.CustomerController.UpdateCustomer)
+		customerGroup.Delete("/:id", r.CustomerController.DeleteCustomer)
+	}
 
-	// Customer Routes
-	employeeGroup := app.Group("/employees")
-	employeeGroup.Post("/", employeeController.CreateEmployee)
-	employeeGroup.Get("/", employeeController.DeleteEmployee)
-	employeeGroup.Get("/:id", employeeController.GetEmployeeByID)
-	employeeGroup.Put("/:id", employeeController.UpdateEmployee)
-	employeeGroup.Delete("/:id", employeeController.DeleteEmployee)
+	// Employee Routes
+	employeeGroup := r.App.Group("/employees")
+	{
+		employeeGroup.Post("/", r.EmployeeController.CreateEmployee)
+		employeeGroup.Get("/", r.EmployeeController.GetAllEmployees) // FIXED
+		employeeGroup.Get("/:id", r.EmployeeController.GetEmployeeByID)
+		employeeGroup.Put("/:id", r.EmployeeController.UpdateEmployee)
+		employeeGroup.Delete("/:id", r.EmployeeController.DeleteEmployee)
+	}
 }
